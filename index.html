@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #0CC0DF; /* Background color */
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 40%;
+            max-width: 800px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow */
+            padding: 20px;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 5px solid #0CC0DF; /* Outer blue border color */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .qa-box {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .question {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .answer {
+            font-size: 1.2em;
+            color: #555;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Text shadow */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img id="quizImage" src="https://i.imgur.com/FFMMvkh.png" alt="Quiz Image">
+        <div class="qa-box">
+            <div id="question" class="question">Click the image to get a question!</div>
+            <div id="answer" class="answer"></div>
+        </div>
+    </div>
+    
+    <script>
+        const questionsAndAnswers = [
+            { question: "Who won the Premier League in 2020?", answer: "Liverpool" },
+            { question: "Which team won the 2021 Rugby Union Six Nations Championship?", answer: "Wales" },
+            { question: "Who was the UK snooker champion in 2022?", answer: "Ronnie O'Sullivan" },
+            { question: "Which team won the FA Cup in 2023?", answer: "Manchester City" },
+            { question: "Who was the UK cricket team captain in 2021 during the ICC T20 World Cup?", answer: "Eoin Morgan" },
+            { question: "Which cyclist won the 2020 Tour de France?", answer: "Tadej Pogačar" },
+            { question: "Who won the Wimbledon Men's Singles in 2021?", answer: "Novak Djokovic" },
+            { question: "Which British athlete won gold in the 2022 Winter Olympics for curling?", answer: "Team GB" },
+            { question: "Who won the 2024 UK Open Darts Championship?", answer: "Michael van Gerwen" },
+            { question: "Which team won the 2022 UEFA Women's Euro?", answer: "England" },
+            { question: "Who won the 2021 British Open Golf Championship?", answer: "Collin Morikawa" },
+            { question: "Which English football club won the League Cup in 2022?", answer: "Liverpool" },
+            { question: "Who won the 2022 UK Championships in Athletics for the 100m sprint?", answer: "Zharnel Hughes" },
+            { question: "Which team won the 2023 Super League Grand Final?", answer: "Leeds Rhinos" },
+            { question: "Who won the 2023 UK Horse Racing Derby?", answer: "August Rodin" },
+            { question: "Which team won the 2021 FA Women's Super League?", answer: "Chelsea" },
+            { question: "Who was the UK boxing heavyweight champion in 2023?", answer: "Tyson Fury" },
+            { question: "Who won the 2022 British Touring Car Championship?", answer: "Ash Sutton" },
+            { question: "Which British swimmer won gold in the 2020 Olympics for the 200m freestyle?", answer: "Tom Dean" },
+            { question: "Who won the 2021 UK Championship in Formula 1?", answer: "Max Verstappen" },
+            { question: "Which team won the 2020 FA Cup?", answer: "Arsenal" },
+            { question: "Who won the 2023 Ryder Cup?", answer: "Europe" },
+            { question: "Which team won the 2024 Super League?", answer: "St Helens" },
+            { question: "Who was the UK world champion in darts in 2023?", answer: "Michael van Gerwen" },
+            { question: "Which athlete won gold for Team GB in the 2021 Tokyo Olympics 400m race?", answer: "Matthew Hudson-Smith" },
+            { question: "Who won the 2022 British Speedway Championship?", answer: "Tai Woffinden" },
+            { question: "Which team won the 2022 Rugby League World Cup?", answer: "Australia" },
+            { question: "Who was the UK Athletics champion in the men's 800m in 2022?", answer: "Max Burgin" },
+            { question: "Which team won the 2023 English Football League (EFL) Cup?", answer: "Manchester United" },
+            { question: "Who won the 2022 UK Championship in snooker?", answer: "Ronnie O'Sullivan" },
+            { question: "Which British golfer won the 2023 Open Championship?", answer: "Rory McIlroy" },
+            { question: "Who won the 2021 UK Championship in swimming for the 100m freestyle?", answer: "Duncan Scott" },
+            { question: "Which team won the 2022 Super League?", answer: "St Helens" },
+            { question: "Who was the 2022 UK Indoor Athletics champion for the women's 60m?", answer: "Dina Asher-Smith" },
+            { question: "Which team won the 2021 FA Cup?", answer: "Leicester City" },
+            { question: "Who won the 2023 UK Cycling Championships?", answer: "Mark Cavendish" },
+            { question: "Which British athlete won gold in the 2020 Olympics for the men's decathlon?", answer: "Damian Warner" },
+            { question: "Who was the UK Champion in badminton in 2022?", answer: "Kirsty Gilmour" },
+            { question: "Which team won the 2023 Rugby Union Six Nations Championship?", answer: "Ireland" },
+            { question: "Who won the 2022 UK Open Championship in golf?", answer: "Rory McIlroy" },
+            { question: "Which British athlete won the 2023 800m race at the World Athletics Championships?", answer: "Keely Hodgkinson" },
+            { question: "Who was the UK Champion in tennis for the 2023 Wimbledon Women's Singles?", answer: "Elena Rybakina" },
+            { question: "Which team won the 2024 FA Women's Super League?", answer: "Arsenal" },
+            { question: "Who won the 2022 UK Championships in boxing for light heavyweight?", answer: "Joe Smith Jr." },
+            { question: "Which British swimmer won the 200m backstroke in the 2021 Tokyo Olympics?", answer: "Luke Greenbank" },
+            { question: "Who won the 2023 UK Championships in Formula 1?", answer: "Max Verstappen" },
+            { question: "Which team won the 2022 English Premier League?", answer: "Manchester City" },
+            { question: "Who was the UK Champion in triathlon for the 2022 season?", answer: "Alex Yee" },
+            { question: "Which British athlete won gold in the 2020 Olympics for the men's 100m?", answer: "Andre De Grasse" },
+            { question: "Who was the UK champion in the 2023 Women's British Open Golf?", answer: "Cameron Smith" },
+            { question: "Which team won the 2022 UEFA Champions League?", answer: "Real Madrid" },
+            { question: "Who won the 2023 UK Championship in snooker?", answer: "Ronnie O'Sullivan" },
+            { question: "Which British tennis player won the 2024 Australian Open Women's Singles?", answer: "Emma Raducanu" },
+            { question: "Who won the 2022 British Grand Prix in Formula 1?", answer: "Charles Leclerc" },
+            { question: "Which team won the 2023 UK Women's Rugby League Grand Final?", answer: "York City Knights" },
+            { question: "Who was the 2021 UK Champion in the men's decathlon?", answer: "Damian Warner" },
+            { question: "Which British athlete won the 2022 1500m race at the World Athletics Championships?", answer: "Jake Wightman" },
+            { question: "Who won the 2024 British Superbike Championship?", answer: "Jason O'Halloran" },
+            { question: "Which team won the 2021 UK Women's Super League?", answer: "Chelsea" },
+            { question: "Who was the UK Champion in the 2023 men's 5000m race?", answer: "Marc Scott" },
+            { question: "Which British swimmer won the 2022 Commonwealth Games 200m breaststroke?", answer: "Adam Peaty" },
+            { question: "Who won the 2024 British Open Tennis Championship?", answer: "Cameron Norrie" },
+            { question: "Which team won the 2023 UK Snooker Championship?", answer: "Ronnie O'Sullivan" },
+            { question: "Who was the UK Champion in the 2022 Women's marathon?", answer: "Charlotte Purdue" },
+            { question: "Which British athlete won the 2024 Olympic gold in the 400m hurdles?", answer: "Karsten Warholm" },
+            { question: "Who won the 2023 UK Champion in the women's heptathlon?", answer: "Katarina Johnson-Thompson" },
+            { question: "Which team won the 2022 UEFA Europa League?", answer: "Eintracht Frankfurt" },
+            { question: "Who won the 2024 UK Championships in the women's 1500m?", answer: "Laura Muir" }
+        ];
+
+        document.getElementById('quizImage').addEventListener('click', function() {
+            const randomIndex = Math.floor(Math.random() * questionsAndAnswers.length);
+            const question = questionsAndAnswers[randomIndex].question;
+            const answer = questionsAndAnswers[randomIndex].answer;
+
+            document.getElementById('question').textContent = question;
+            document.getElementById('answer').textContent = answer;
+        });
+    </script>
+</body>
+</html>
